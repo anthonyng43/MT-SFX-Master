@@ -29,6 +29,12 @@ namespace MT_SFX_Master
             dataGridView1.DragEnter += dataGridView1_DragEnter;
             dataGridView1.DragDrop += dataGridView1_DragDrop;
 
+            label2.Visible = false;
+            label4.Visible = false;
+
+            button2.Visible = false;
+            button4.Visible = false;
+
             LoadReferenceHeader();
             LoadReferenceBody();
         }
@@ -205,11 +211,13 @@ namespace MT_SFX_Master
                     byte[] fileBodyBytes = reader.ReadBytes((int)(fs.Length - 0x6800));
                     if (!fileBodyBytes.SequenceEqual(referenceBytesBody.Take(fileBodyBytes.Length)))
                     {
+                        label2.Visible = true;
                         label2.Text = "Modified: True";
                     }
 
                     if (fileBodyBytes.SequenceEqual(referenceBytesBody.Take(fileBodyBytes.Length)))
                     {
+                        label2.Visible = true;
                         label2.Text = "Modified: False";
                     }
 
@@ -284,8 +292,13 @@ namespace MT_SFX_Master
                         trackIndex++;
                     }
                     label1.Text = "SYSTEM.nub is Loaded";
+                    label2.Visible = true;
                     label3.Visible = false;
+                    label4.Visible = true;
                     label4.Text = "Loaded Version: MT6";
+
+                    button2.Visible = true;
+                    button4.Visible = true;
                 }
             }
             catch (Exception ex)
