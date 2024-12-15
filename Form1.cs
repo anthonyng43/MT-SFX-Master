@@ -310,6 +310,17 @@ namespace MT_SFX_Master
         // Event handler for DataGridView CellClick
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0 || e.ColumnIndex < 0)
+            {
+                // Ignore clicks on headers or invalid cells
+                return;
+            }
+            
+            if (dataGridView1.Columns[e.ColumnIndex] == null)
+            {
+                return;
+            }
+
             string songStartHex = dataGridView1.Rows[e.RowIndex].Cells["SfxStart"].Value.ToString();
             string songDurationHex = dataGridView1.Rows[e.RowIndex].Cells["SfxDuration"].Value.ToString();
 
