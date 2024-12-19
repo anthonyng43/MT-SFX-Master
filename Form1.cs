@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,8 +20,12 @@ namespace MT_SFX_Master
         }
 
         private string currentFilePath;
-        private byte[] referenceBytesHeader;
-        private byte[] referenceBytesBody;
+        private byte[] referenceBytesHeader6;
+        private byte[] referenceBytesBody6;
+        private byte[] referenceBytesHeader5;
+        private byte[] referenceBytesBody5;
+        private byte[] referenceBytesHeader4;
+        private byte[] referenceBytesBody4;
 
         // load
         private void Form1_Load(object sender, EventArgs e)
@@ -35,18 +40,22 @@ namespace MT_SFX_Master
             button2.Visible = false;
             button4.Visible = false;
 
-            LoadReferenceHeader();
-            LoadReferenceBody();
+            LoadReferenceHeader6();
+            LoadReferenceBody6();
+            LoadReferenceHeader5();
+            LoadReferenceBody5();
+            LoadReferenceHeader4();
+            LoadReferenceBody4();
         }
 
         // load function
-        private void LoadReferenceHeader()
+        private void LoadReferenceHeader6()
         {
             try
             {
                 // Get the assembly and resource stream
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                using (Stream stream = assembly.GetManifestResourceStream("MT_SFX_Master.Resources.header"))
+                using (Stream stream = assembly.GetManifestResourceStream("MT_SFX_Master.Resources.header6"))
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
                     if (stream == null)
@@ -55,7 +64,7 @@ namespace MT_SFX_Master
                     }
 
                     stream.CopyTo(memoryStream);
-                    referenceBytesHeader = memoryStream.ToArray();
+                    referenceBytesHeader6 = memoryStream.ToArray();
                 }
             }
             catch (Exception ex)
@@ -64,13 +73,13 @@ namespace MT_SFX_Master
             }
         }
 
-        private void LoadReferenceBody()
+        private void LoadReferenceBody6()
         {
             try
             {
                 // Get the assembly and resource stream
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                using (Stream stream = assembly.GetManifestResourceStream("MT_SFX_Master.Resources.body"))
+                using (Stream stream = assembly.GetManifestResourceStream("MT_SFX_Master.Resources.body6"))
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
                     if (stream == null)
@@ -79,7 +88,7 @@ namespace MT_SFX_Master
                     }
 
                     stream.CopyTo(memoryStream);
-                    referenceBytesBody = memoryStream.ToArray();
+                    referenceBytesBody6 = memoryStream.ToArray();
                 }
             }
             catch (Exception ex)
@@ -88,9 +97,100 @@ namespace MT_SFX_Master
             }
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void LoadReferenceHeader5()
         {
+            try
+            {
+                // Get the assembly and resource stream
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                using (Stream stream = assembly.GetManifestResourceStream("MT_SFX_Master.Resources.header5"))
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    if (stream == null)
+                    {
+                        throw new Exception("Resource not found. Ensure 'header' is embedded correctly.");
+                    }
 
+                    stream.CopyTo(memoryStream);
+                    referenceBytesHeader5 = memoryStream.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load embedded reference file:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadReferenceBody5()
+        {
+            try
+            {
+                // Get the assembly and resource stream
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                using (Stream stream = assembly.GetManifestResourceStream("MT_SFX_Master.Resources.body5"))
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    if (stream == null)
+                    {
+                        throw new Exception("Resource not found. Ensure 'header' is embedded correctly.");
+                    }
+
+                    stream.CopyTo(memoryStream);
+                    referenceBytesBody5 = memoryStream.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load embedded reference file:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadReferenceHeader4()
+        {
+            try
+            {
+                // Get the assembly and resource stream
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                using (Stream stream = assembly.GetManifestResourceStream("MT_SFX_Master.Resources.header4"))
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    if (stream == null)
+                    {
+                        throw new Exception("Resource not found. Ensure 'header' is embedded correctly.");
+                    }
+
+                    stream.CopyTo(memoryStream);
+                    referenceBytesHeader4 = memoryStream.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load embedded reference file:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadReferenceBody4()
+        {
+            try
+            {
+                // Get the assembly and resource stream
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                using (Stream stream = assembly.GetManifestResourceStream("MT_SFX_Master.Resources.body4"))
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    if (stream == null)
+                    {
+                        throw new Exception("Resource not found. Ensure 'header' is embedded correctly.");
+                    }
+
+                    stream.CopyTo(memoryStream);
+                    referenceBytesBody4 = memoryStream.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load embedded reference file:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // browse button
@@ -190,25 +290,65 @@ namespace MT_SFX_Master
                         return;
                     }
 
-                    fs.Seek(0, SeekOrigin.Begin);
-                    byte[] fileHeaderBytes = reader.ReadBytes(0x6800);
+                    // Get header hex
+                    fs.Seek(0x10, SeekOrigin.Begin);
+                    int fileHeaderHex = reader.ReadInt32();
 
-                    if (referenceBytesHeader == null || referenceBytesHeader.Length < 0x6800)
+                    fs.Seek(0, SeekOrigin.Begin);
+                    byte[] fileHeaderBytes = reader.ReadBytes(fileHeaderHex);
+
+                    // track count
+                    fs.Seek(0xC, SeekOrigin.Begin);
+                    int trackCount = reader.ReadInt32();
+
+                    byte[] referenceBytesHeader;
+                    byte[] referenceBytesBody;
+                    int trackBytes;
+
+                    switch (trackCount)
+                    {
+                        case 120:
+                            referenceBytesHeader = referenceBytesHeader6;
+                            referenceBytesBody = referenceBytesBody6;
+                            trackBytes = 0x200;
+                            label4.Text = "Loaded Version: MT6";
+                            break;
+
+                        case 94:
+                            referenceBytesHeader = referenceBytesHeader5;
+                            referenceBytesBody = referenceBytesBody5;
+                            trackBytes = 0x1A0;
+                            label4.Text = "Loaded Version: MT5";
+                            break;
+
+                        case 91:
+                            referenceBytesHeader = referenceBytesHeader4;
+                            referenceBytesBody = referenceBytesBody4;
+                            trackBytes = 0x190;
+                            label4.Text = "Loaded Version: MT4";
+                            break;
+
+                        default:
+                            MessageBox.Show($"Unexpected track count: {trackCount}. Please verify the file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return; // Exit if the track count is not recognized
+                    }
+
+                    if (referenceBytesHeader == null || referenceBytesHeader.Length < fileHeaderHex)
                     {
                         MessageBox.Show("Reference header bytes are not loaded or invalid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
                     // Compare the file header with the reference bytes
-                    if (!fileHeaderBytes.SequenceEqual(referenceBytesHeader.Take(0x6800)))
+                    if (!fileHeaderBytes.SequenceEqual(referenceBytesHeader.Take(fileHeaderHex)))
                     {
                         MessageBox.Show("Loaded file header does not match the reference bytes.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
                     // Compare the file body
-                    fs.Seek(0x6800, SeekOrigin.Begin);
-                    byte[] fileBodyBytes = reader.ReadBytes((int)(fs.Length - 0x6800));
+                    fs.Seek(fileHeaderHex, SeekOrigin.Begin);
+                    byte[] fileBodyBytes = reader.ReadBytes((int)(fs.Length - fileHeaderHex));
                     if (!fileBodyBytes.SequenceEqual(referenceBytesBody.Take(fileBodyBytes.Length)))
                     {
                         label2.Visible = true;
@@ -255,13 +395,14 @@ namespace MT_SFX_Master
                     };
                     dataGridView1.Columns.Add(replaceDataButton);
 
-                    // Read track list from 0x20 to 0x1FF
+                    // Read track list from 0x20 depends on loaded version
                     fs.Seek(0x20, SeekOrigin.Begin);
                     int trackIndex = 1;
 
-                    for (int i = 0x20; i < 0x200; i += 4)
+                    for (int i = 0x20; i < trackBytes; i += 4)
                     {
-                        int songOffset = 0x200 + (trackIndex - 1) * 0xD0;
+                        if (trackIndex > trackCount) break;
+                        int songOffset = trackBytes + (trackIndex - 1) * 0xD0;
 
                         if (songOffset + 0xD0 > fs.Length)
                         {
@@ -274,7 +415,7 @@ namespace MT_SFX_Master
                         int duration = reader.ReadInt32();
 
                         fs.Seek(songOffset + 0x18, SeekOrigin.Begin);
-                        int startOffset = reader.ReadInt32() + 0x6800;
+                        int startOffset = reader.ReadInt32() + fileHeaderHex;
                         int endOffset = startOffset + duration;
 
                         fs.Seek(startOffset, SeekOrigin.Begin);
@@ -295,7 +436,6 @@ namespace MT_SFX_Master
                     label2.Visible = true;
                     label3.Visible = false;
                     label4.Visible = true;
-                    label4.Text = "Loaded Version: MT6";
 
                     button2.Visible = true;
                     button4.Visible = true;
@@ -455,11 +595,6 @@ namespace MT_SFX_Master
                 }
             }
         }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
         
         // read raw bytes
         private void button3_Click(object sender, EventArgs e)
@@ -533,8 +668,8 @@ namespace MT_SFX_Master
                 {
                     for (int i = 0; i < dataGridView.RowCount; i++)
                     {
-                        string songStartHex = dataGridView.Rows[i].Cells["SongStart"].Value.ToString();
-                        string songDurationHex = dataGridView.Rows[i].Cells["SongDuration"].Value.ToString();
+                        string songStartHex = dataGridView.Rows[i].Cells["SfxStart"].Value.ToString();
+                        string songDurationHex = dataGridView.Rows[i].Cells["SfxDuration"].Value.ToString();
 
                         int startOffset = Convert.ToInt32(songStartHex, 16);
                         int duration = Convert.ToInt32(songDurationHex, 16);
@@ -557,12 +692,6 @@ namespace MT_SFX_Master
         // restore to default
         private void button4_Click(object sender, EventArgs e)
         {
-            if (label1.Text != "SYSTEM.nub is Loaded")
-            {
-                MessageBox.Show("SYSTEM.nub file is not loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             if (label2.Text != "Modified: True")
             {
                 MessageBox.Show("Loaded SYSTEM.nub file is not Modified.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -571,24 +700,57 @@ namespace MT_SFX_Master
 
             try
             {
-                if (referenceBytesBody == null || referenceBytesBody.Length == 0)
-                {
-                    MessageBox.Show("Reference bytes are not loaded. Please check LoadReferenceBody().", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                
                 using (FileStream fs = new FileStream(currentFilePath, FileMode.Open, FileAccess.ReadWrite))
+                using (BinaryReader reader = new BinaryReader(fs))
                 {
+                    // Get header hex
+                    fs.Seek(0x10, SeekOrigin.Begin);
+                    int fileHeaderHex = reader.ReadInt32();
+
+                    // track count
+                    fs.Seek(0xC, SeekOrigin.Begin);
+                    int trackCount = reader.ReadInt32();
+
+                    byte[] referenceBytesHeader;
+                    byte[] referenceBytesBody;
+
+                    switch (trackCount)
+                    {
+                        case 120:
+                            referenceBytesHeader = referenceBytesHeader6;
+                            referenceBytesBody = referenceBytesBody6;
+                            break;
+
+                        case 94:
+                            referenceBytesHeader = referenceBytesHeader5;
+                            referenceBytesBody = referenceBytesBody5;
+                            break;
+
+                        case 91:
+                            referenceBytesHeader = referenceBytesHeader4;
+                            referenceBytesBody = referenceBytesBody4;
+                            break;
+
+                        default:
+                            MessageBox.Show($"Unexpected track count: {trackCount}. Please verify the file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return; // Exit if the track count is not recognized
+                    }
+
+                    if (referenceBytesBody == null || referenceBytesBody.Length == 0)
+                    {
+                        MessageBox.Show("Reference bytes are not loaded. Please check LoadReferenceBody().", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
                     if (fs.Length < 0x6800)
                     {
                         MessageBox.Show("The loaded file is too small or corrupted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-                    fs.Seek(0x6800, SeekOrigin.Begin); // Start writing at offset 0x6800
+                    fs.Seek(fileHeaderHex, SeekOrigin.Begin); // Start writing
                     fs.Write(referenceBytesBody, 0, referenceBytesBody.Length); // Write the entire reference body
                 }
-                
                 PopulateTrackData(currentFilePath);
 
                 MessageBox.Show("Bytes restored to default successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -597,16 +759,6 @@ namespace MT_SFX_Master
             {
                 MessageBox.Show($"Failed to restore bytes:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

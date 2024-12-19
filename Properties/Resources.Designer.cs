@@ -63,9 +63,29 @@ namespace MT_SFX_Master.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] body {
+        internal static byte[] body4 {
             get {
-                object obj = ResourceManager.GetObject("body", resourceCulture);
+                object obj = ResourceManager.GetObject("body4", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] body5 {
+            get {
+                object obj = ResourceManager.GetObject("body5", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] body6 {
+            get {
+                object obj = ResourceManager.GetObject("body6", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -83,9 +103,29 @@ namespace MT_SFX_Master.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] header {
+        internal static byte[] header4 {
             get {
-                object obj = ResourceManager.GetObject("header", resourceCulture);
+                object obj = ResourceManager.GetObject("header4", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] header5 {
+            get {
+                object obj = ResourceManager.GetObject("header5", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] header6 {
+            get {
+                object obj = ResourceManager.GetObject("header6", resourceCulture);
                 return ((byte[])(obj));
             }
         }

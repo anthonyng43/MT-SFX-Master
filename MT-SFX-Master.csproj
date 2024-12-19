@@ -79,13 +79,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Resources\header" />
+    <EmbeddedResource Include="Resources\header4" />
+    <EmbeddedResource Include="Resources\header5" />
+    <EmbeddedResource Include="Resources\header6" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\body" />
+    <EmbeddedResource Include="Resources\body4" />
+    <EmbeddedResource Include="Resources\body5" />
+    <EmbeddedResource Include="Resources\body6" />
     <None Include="Resources\favicon.ico" />
   </ItemGroup>
   <ItemGroup>

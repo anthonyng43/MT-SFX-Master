@@ -52,7 +52,6 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "SYSTEM.nub is not Loaded";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // button1
             // 
@@ -74,7 +73,6 @@
             this.label2.Size = new System.Drawing.Size(74, 18);
             this.label2.TabIndex = 5;
             this.label2.Text = "Modified:";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // dataGridView1
             // 
@@ -142,18 +140,16 @@
             this.label3.Size = new System.Drawing.Size(251, 18);
             this.label3.TabIndex = 10;
             this.label3.Text = "Drag And Drop SYSTEM.nub here";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // label4
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(360, 50);
+            this.label4.Location = new System.Drawing.Point(351, 50);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(126, 18);
             this.label4.TabIndex = 11;
             this.label4.Text = "Loaded Version:";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // Form1
             // 
