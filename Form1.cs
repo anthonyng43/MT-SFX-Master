@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using NAudio.Wave;
 
 namespace MT_SFX_Master
 {
@@ -193,9 +188,31 @@ namespace MT_SFX_Master
             }
         }
 
+        // Method to convert big-endian PCM data to little-endian
+        private byte[] ConvertBigEndianToLittleEndian(byte[] bigEndianData)
+        {
+            byte[] littleEndianData = new byte[bigEndianData.Length];
+            for (int i = 0; i < bigEndianData.Length; i += 2)
+            {
+                if (i + 1 < bigEndianData.Length)
+                {
+                    littleEndianData[i] = bigEndianData[i + 1];
+                    littleEndianData[i + 1] = bigEndianData[i];
+                }
+            }
+            return littleEndianData;
+        }
+
         // browse button
         private void button1_Click(object sender, EventArgs e)
         {
+            label2.Visible = false;
+            label3.Visible = true;
+            label4.Visible = false;
+
+            button2.Visible = false;
+            button4.Visible = false;
+
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "NUB Files (*.nub)|*.nub";
             openFileDialog.FileName = "SYSTEM.nub";
@@ -368,15 +385,6 @@ namespace MT_SFX_Master
                     dataGridView1.Columns.Add("SfxEnd", "Sfx End");
                     dataGridView1.Columns.Add("SfxDuration", "Sfx Duration");
 
-                    var viewDataButtonColumn = new DataGridViewButtonColumn
-                    {
-                        Name = "ViewDataButton",
-                        HeaderText = "",
-                        Text = "View",
-                        UseColumnTextForButtonValue = true
-                    };
-                    dataGridView1.Columns.Add(viewDataButtonColumn);
-
                     var exportDataButton = new DataGridViewButtonColumn
                     {
                         Name = "ExportDataButton",
@@ -394,6 +402,15 @@ namespace MT_SFX_Master
                         UseColumnTextForButtonValue = true
                     };
                     dataGridView1.Columns.Add(replaceDataButton);
+
+                    var previewButton = new DataGridViewButtonColumn
+                    {
+                        Name = "PlayDataButton",
+                        HeaderText = "",
+                        Text = "Play",
+                        UseColumnTextForButtonValue = true
+                    };
+                    dataGridView1.Columns.Add(previewButton);
 
                     // Read track list from 0x20 depends on loaded version
                     fs.Seek(0x20, SeekOrigin.Begin);
@@ -466,43 +483,6 @@ namespace MT_SFX_Master
 
             int startOffset = Convert.ToInt32(songStartHex, 16);
             int duration = Convert.ToInt32(songDurationHex, 16);
-
-            if (e.RowIndex >= 0 && dataGridView1.Columns[e.ColumnIndex].Name == "ViewDataButton")
-            {
-                try
-                {
-                    using (FileStream fs = new FileStream(currentFilePath, FileMode.Open, FileAccess.Read))
-                    using (BinaryReader reader = new BinaryReader(fs))
-                    {
-                        fs.Seek(startOffset, SeekOrigin.Begin);
-                        byte[] rawData = reader.ReadBytes(duration);
-                        string rawDataHex = BitConverter.ToString(rawData).Replace("-", " ");
-
-                        // Show the raw data in a new form
-                        using (Form viewForm = new Form())
-                        {
-                            viewForm.Text = $"Raw Data for Track {e.RowIndex + 1}";
-                            viewForm.Size = new Size(600, 400);
-
-                            TextBox textBox = new TextBox
-                            {
-                                Multiline = true,
-                                ReadOnly = true,
-                                ScrollBars = ScrollBars.Vertical,
-                                Dock = DockStyle.Fill,
-                                Text = rawDataHex
-                            };
-
-                            viewForm.Controls.Add(textBox);
-                            viewForm.ShowDialog();
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error reading raw data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
 
             if (e.RowIndex >= 0 && dataGridView1.Columns[e.ColumnIndex].Name == "ExportDataButton")
             {
@@ -592,6 +572,30 @@ namespace MT_SFX_Master
                     {
                         MessageBox.Show($"Error replacing data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                }
+            }
+
+            if (e.RowIndex >= 0 && dataGridView1.Columns[e.ColumnIndex].Name == "PlayDataButton")
+            {
+                try
+                {
+                    using (FileStream fs = new FileStream(currentFilePath, FileMode.Open, FileAccess.Read))
+                    using (BinaryReader reader = new BinaryReader(fs))
+                    {
+                        fs.Seek(startOffset, SeekOrigin.Begin);
+                        byte[] rawData = reader.ReadBytes(duration);
+
+                        // Convert from big-endian to little-endian
+                        byte[] littleEndianData = ConvertBigEndianToLittleEndian(rawData);
+
+                        // Open playback window
+                        PlaybackForm playbackForm = new PlaybackForm(littleEndianData, 22050, 16, 1);
+                        playbackForm.Show();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error reading raw data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -759,6 +763,114 @@ namespace MT_SFX_Master
             {
                 MessageBox.Show($"Failed to restore bytes:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+    }
+
+    public partial class PlaybackForm : Form
+    {
+        private IWavePlayer waveOut;
+        private WaveStream waveStream;
+        private byte[] audioData;
+        private WaveFormat waveFormat;
+        private bool isLooping;
+        private System.Timers.Timer playbackTimer;
+        private int trackDuration; // Total duration in seconds
+        private int currentPlaybackPosition; // Current playback position in seconds
+
+        public PlaybackForm(byte[] audioData, int sampleRate, int bitDepth, int channels)
+        {
+            InitializePlay();
+
+            this.audioData = audioData;
+            this.waveFormat = new WaveFormat(sampleRate, bitDepth, channels);
+
+            this.FormClosed += PlaybackForm_FormClosed;
+        }
+
+        private void PlaybackForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            StopAudio();
+        }
+
+        private void PlayOnceButton_Click(object sender, EventArgs e)
+        {
+            PlayAudio(false);
+        }
+
+        private void PlayLoopButton_Click(object sender, EventArgs e)
+        {
+            PlayAudio(true);
+        }
+
+        private void StopButton_Click(object sender, EventArgs e)
+        {
+            StopAudio();
+        }
+
+        private void PlayAudio(bool loop)
+        {
+            StopAudio(); // Stop any existing playback
+
+            isLooping = loop;
+            MemoryStream ms = new MemoryStream(audioData);
+            waveStream = new RawSourceWaveStream(ms, waveFormat);
+
+            if (loop)
+            {
+                waveStream = new LoopStream(waveStream);
+            }
+
+            waveOut = new WaveOutEvent();
+            waveOut.Init(waveStream);
+            waveOut.Play();
+        }
+
+        private void StopAudio()
+        {
+            waveOut?.Stop();
+            waveOut?.Dispose();
+            waveOut = null;
+
+            waveStream?.Dispose();
+            waveStream = null;
+        }
+    }
+
+    // LoopStream class to handle looping
+    public class LoopStream : WaveStream
+    {
+        private readonly WaveStream sourceStream;
+
+        public LoopStream(WaveStream sourceStream)
+        {
+            this.sourceStream = sourceStream;
+        }
+
+        public override WaveFormat WaveFormat => sourceStream.WaveFormat;
+
+        public override long Length => sourceStream.Length;
+
+        public override long Position
+        {
+            get => sourceStream.Position;
+            set => sourceStream.Position = value;
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            int totalBytesRead = 0;
+
+            while (totalBytesRead < count)
+            {
+                int bytesRead = sourceStream.Read(buffer, offset + totalBytesRead, count - totalBytesRead);
+                if (bytesRead == 0)
+                {
+                    sourceStream.Position = 0; // Restart the stream
+                }
+                totalBytesRead += bytesRead;
+            }
+
+            return totalBytesRead;
         }
     }
 }

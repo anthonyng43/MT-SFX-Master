@@ -1,4 +1,9 @@
-﻿namespace MT_SFX_Master
+﻿using System;
+using System.IO;
+using System.Windows.Forms;
+using NAudio.Wave;
+
+namespace MT_SFX_Master
 {
     partial class Form1
     {
@@ -80,8 +85,8 @@
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToOrderColumns = true;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeight = 29;
             this.dataGridView1.Location = new System.Drawing.Point(12, 71);
@@ -174,7 +179,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         private void DataGridView1_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
@@ -193,6 +197,63 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+    }
+
+    partial class PlaybackForm
+    {
+        private void InitializePlay()
+        {
+            this.playOnceButton = new System.Windows.Forms.Button();
+            this.playLoopButton = new System.Windows.Forms.Button();
+            this.stopButton = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+
+            // Play Once Button
+            this.playOnceButton.Location = new System.Drawing.Point(12, 12);
+            this.playOnceButton.Name = "playOnceButton";
+            this.playOnceButton.Size = new System.Drawing.Size(75, 23);
+            this.playOnceButton.TabIndex = 0;
+            this.playOnceButton.Text = "Play Once";
+            this.playOnceButton.UseVisualStyleBackColor = true;
+            this.playOnceButton.Click += new System.EventHandler(this.PlayOnceButton_Click);
+
+            // Play Loop Button
+            this.playLoopButton.Location = new System.Drawing.Point(93, 12);
+            this.playLoopButton.Name = "playLoopButton";
+            this.playLoopButton.Size = new System.Drawing.Size(75, 23);
+            this.playLoopButton.TabIndex = 1;
+            this.playLoopButton.Text = "Play Loop";
+            this.playLoopButton.UseVisualStyleBackColor = true;
+            this.playLoopButton.Click += new System.EventHandler(this.PlayLoopButton_Click);
+
+            // Stop Button
+            this.stopButton.Location = new System.Drawing.Point(174, 12);
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(75, 23);
+            this.stopButton.TabIndex = 2;
+            this.stopButton.Text = "Stop";
+            this.stopButton.UseVisualStyleBackColor = true;
+            this.stopButton.Click += new System.EventHandler(this.StopButton_Click);
+
+            // PlaybackForm
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(261, 48);
+            this.Controls.Add(this.stopButton);
+            this.Controls.Add(this.playLoopButton);
+            this.Controls.Add(this.playOnceButton);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "PlaybackForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Audio Playback";
+            this.ResumeLayout(false);
+        }
+
+        private System.Windows.Forms.Button playOnceButton;
+        private System.Windows.Forms.Button playLoopButton;
+        private System.Windows.Forms.Button stopButton;
     }
 }
 
