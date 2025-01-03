@@ -128,14 +128,19 @@
     <EmbeddedResource Include="Resources\header4" />
     <EmbeddedResource Include="Resources\header5" />
     <EmbeddedResource Include="Resources\header6" />
+    <EmbeddedResource Include="Resources\sfx90mt5" />
+    <EmbeddedResource Include="Resources\sfx90mt6" />
+    <EmbeddedResource Include="Resources\sfx92" />
+    <EmbeddedResource Include="Resources\sfx93" />
+    <EmbeddedResource Include="Resources\sfx94" />
+    <EmbeddedResource Include="Resources\header5en" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\body4" />
-    <EmbeddedResource Include="Resources\body5" />
-    <EmbeddedResource Include="Resources\body6" />
+    <EmbeddedResource Include="Resources\body1" />
+    <EmbeddedResource Include="Resources\body2mt6" />
     <None Include="Resources\favicon.ico" />
   </ItemGroup>
   <ItemGroup>

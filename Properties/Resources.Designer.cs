@@ -63,9 +63,9 @@ namespace MT_SFX_Master.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] body4 {
+        internal static byte[] body1 {
             get {
-                object obj = ResourceManager.GetObject("body4", resourceCulture);
+                object obj = ResourceManager.GetObject("body1", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -73,19 +73,9 @@ namespace MT_SFX_Master.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] body5 {
+        internal static byte[] body2mt6 {
             get {
-                object obj = ResourceManager.GetObject("body5", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] body6 {
-            get {
-                object obj = ResourceManager.GetObject("body6", resourceCulture);
+                object obj = ResourceManager.GetObject("body2mt6", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -123,9 +113,69 @@ namespace MT_SFX_Master.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] header5en {
+            get {
+                object obj = ResourceManager.GetObject("header5en", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] header6 {
             get {
                 object obj = ResourceManager.GetObject("header6", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] sfx90mt5 {
+            get {
+                object obj = ResourceManager.GetObject("sfx90mt5", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] sfx90mt6 {
+            get {
+                object obj = ResourceManager.GetObject("sfx90mt6", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] sfx92 {
+            get {
+                object obj = ResourceManager.GetObject("sfx92", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] sfx93 {
+            get {
+                object obj = ResourceManager.GetObject("sfx93", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] sfx94 {
+            get {
+                object obj = ResourceManager.GetObject("sfx94", resourceCulture);
                 return ((byte[])(obj));
             }
         }

@@ -118,14 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="body4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\body4;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="body1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\body1;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="body5" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\body5;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="body6" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\body6;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="body2mt6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\body2mt6;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="favicon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\favicon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -136,7 +133,25 @@
   <data name="header5" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\header5;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="header5en" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\header5en;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="header6" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\header6;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="sfx90mt5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sfx90mt5;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="sfx90mt6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sfx90mt6;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="sfx92" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sfx92;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="sfx93" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sfx93;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="sfx94" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sfx94;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

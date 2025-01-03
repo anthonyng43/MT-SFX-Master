@@ -17,8 +17,10 @@ namespace MT_SFX_Master
         private string currentFilePath;
         private byte[] referenceBytesHeader6;
         private byte[] referenceBytesBody6;
-        private byte[] referenceBytesHeader5;
-        private byte[] referenceBytesBody5;
+        private byte[] referenceBytesHeader5jp;
+        private byte[] referenceBytesBody5jp;
+        private byte[] referenceBytesHeader5en;
+        private byte[] referenceBytesBody5en;
         private byte[] referenceBytesHeader4;
         private byte[] referenceBytesBody4;
 
@@ -37,8 +39,10 @@ namespace MT_SFX_Master
 
             LoadReferenceHeader6();
             LoadReferenceBody6();
-            LoadReferenceHeader5();
-            LoadReferenceBody5();
+            LoadReferenceHeader5jp();
+            LoadReferenceBody5jp();
+            LoadReferenceHeader5en();
+            LoadReferenceBody5en();
             LoadReferenceHeader4();
             LoadReferenceBody4();
         }
@@ -72,27 +76,38 @@ namespace MT_SFX_Master
         {
             try
             {
-                // Get the assembly and resource stream
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                using (Stream stream = assembly.GetManifestResourceStream("MT_SFX_Master.Resources.body6"))
+                var resourceNames = new[]
+                {
+                    "MT_SFX_Master.Resources.body1", // sfx 1 to 89 (sfx 91 included)
+                    "MT_SFX_Master.Resources.sfx90mt6", // sfx 90 for mt6
+                    "MT_SFX_Master.Resources.body2mt6" // sfx 92 to 120
+                };
+
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    if (stream == null)
+                    foreach (var resourceName in resourceNames)
                     {
-                        throw new Exception("Resource not found. Ensure 'header' is embedded correctly.");
+                        using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                        {
+                            if (stream == null)
+                            {
+                                throw new Exception($"Resource '{resourceName}' not found. Ensure it is embedded correctly.");
+                            }
+                            stream.CopyTo(memoryStream);
+                        }
                     }
 
-                    stream.CopyTo(memoryStream);
                     referenceBytesBody6 = memoryStream.ToArray();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load embedded reference file:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Failed to load embedded reference files:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void LoadReferenceHeader5()
+        private void LoadReferenceHeader5jp()
         {
             try
             {
@@ -107,7 +122,7 @@ namespace MT_SFX_Master
                     }
 
                     stream.CopyTo(memoryStream);
-                    referenceBytesHeader5 = memoryStream.ToArray();
+                    referenceBytesHeader5jp = memoryStream.ToArray();
                 }
             }
             catch (Exception ex)
@@ -116,13 +131,50 @@ namespace MT_SFX_Master
             }
         }
 
-        private void LoadReferenceBody5()
+        private void LoadReferenceBody5jp()
+        {
+            try
+            {
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                var resourceNames = new[]
+                {
+                    "MT_SFX_Master.Resources.body1", // sfx 1 to 89 (sfx 91 included)
+                    "MT_SFX_Master.Resources.sfx90mt5", // sfx 90
+                    "MT_SFX_Master.Resources.sfx92",
+                    "MT_SFX_Master.Resources.sfx93",
+                    "MT_SFX_Master.Resources.sfx94"
+                };
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    foreach (var resourceName in resourceNames)
+                    {
+                        using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                        {
+                            if (stream == null)
+                            {
+                                throw new Exception($"Resource '{resourceName}' not found. Ensure it is embedded correctly.");
+                            }
+                            stream.CopyTo(memoryStream);
+                        }
+                    }
+
+                    referenceBytesBody5jp = memoryStream.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load embedded reference files:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadReferenceHeader5en()
         {
             try
             {
                 // Get the assembly and resource stream
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                using (Stream stream = assembly.GetManifestResourceStream("MT_SFX_Master.Resources.body5"))
+                using (Stream stream = assembly.GetManifestResourceStream("MT_SFX_Master.Resources.header5en"))
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
                     if (stream == null)
@@ -131,12 +183,47 @@ namespace MT_SFX_Master
                     }
 
                     stream.CopyTo(memoryStream);
-                    referenceBytesBody5 = memoryStream.ToArray();
+                    referenceBytesHeader5en = memoryStream.ToArray();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to load embedded reference file:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadReferenceBody5en()
+        {
+            try
+            {
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                var resourceNames = new[]
+                {
+                    "MT_SFX_Master.Resources.body1", // sfx 1 to 89 (sfx 91 included)
+                    "MT_SFX_Master.Resources.sfx90mt5", // sfx 90
+                    "MT_SFX_Master.Resources.sfx92",
+                };
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    foreach (var resourceName in resourceNames)
+                    {
+                        using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                        {
+                            if (stream == null)
+                            {
+                                throw new Exception($"Resource '{resourceName}' not found. Ensure it is embedded correctly.");
+                            }
+                            stream.CopyTo(memoryStream);
+                        }
+                    }
+
+                    referenceBytesBody5en = memoryStream.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load embedded reference files:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -168,23 +255,33 @@ namespace MT_SFX_Master
         {
             try
             {
-                // Get the assembly and resource stream
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                using (Stream stream = assembly.GetManifestResourceStream("MT_SFX_Master.Resources.body4"))
+                var resourceNames = new[]
+                {
+                    "MT_SFX_Master.Resources.body1", // sfx 1 to 89 (sfx 91 included)
+                    "MT_SFX_Master.Resources.sfx90mt5", // sfx 90
+                };
+
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    if (stream == null)
+                    foreach (var resourceName in resourceNames)
                     {
-                        throw new Exception("Resource not found. Ensure 'header' is embedded correctly.");
+                        using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                        {
+                            if (stream == null)
+                            {
+                                throw new Exception($"Resource '{resourceName}' not found. Ensure it is embedded correctly.");
+                            }
+                            stream.CopyTo(memoryStream);
+                        }
                     }
 
-                    stream.CopyTo(memoryStream);
                     referenceBytesBody4 = memoryStream.ToArray();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load embedded reference file:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Failed to load embedded reference files:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -328,21 +425,28 @@ namespace MT_SFX_Master
                             referenceBytesHeader = referenceBytesHeader6;
                             referenceBytesBody = referenceBytesBody6;
                             trackBytes = 0x200;
-                            label4.Text = "Loaded Version: MT6";
+                            label4.Text = "Loaded Version:\nMT6 Series JP";
                             break;
 
                         case 94:
-                            referenceBytesHeader = referenceBytesHeader5;
-                            referenceBytesBody = referenceBytesBody5;
+                            referenceBytesHeader = referenceBytesHeader5jp;
+                            referenceBytesBody = referenceBytesBody5jp;
                             trackBytes = 0x1A0;
-                            label4.Text = "Loaded Version: MT5";
+                            label4.Text = "Loaded Version:\nMT5DXP JP";
+                            break;
+
+                        case 92:
+                            referenceBytesHeader = referenceBytesHeader5en;
+                            referenceBytesBody = referenceBytesBody5en;
+                            trackBytes = 0x190;
+                            label4.Text = "Loaded Version:\nMT5 EN";
                             break;
 
                         case 91:
                             referenceBytesHeader = referenceBytesHeader4;
                             referenceBytesBody = referenceBytesBody4;
                             trackBytes = 0x190;
-                            label4.Text = "Loaded Version: MT4";
+                            label4.Text = "Loaded Version:\nMT4 JP";
                             break;
 
                         default:
@@ -384,6 +488,7 @@ namespace MT_SFX_Master
                     dataGridView1.Columns.Add("SfxStart", "Sfx Start");
                     dataGridView1.Columns.Add("SfxEnd", "Sfx End");
                     dataGridView1.Columns.Add("SfxDuration", "Sfx Duration");
+                    dataGridView1.Columns.Add("SfxRate", "Sfx Rate");
 
                     var exportDataButton = new DataGridViewButtonColumn
                     {
@@ -436,7 +541,25 @@ namespace MT_SFX_Master
                         int endOffset = startOffset + duration;
 
                         fs.Seek(startOffset, SeekOrigin.Begin);
-                        byte[] rawData = reader.ReadBytes(duration);                        
+                        byte[] rawData = reader.ReadBytes(duration);
+
+                        fs.Seek(songOffset + 0xC0, SeekOrigin.Begin);
+                        int songRate = reader.ReadInt32();
+                        
+                        switch(trackIndex)
+                        {
+                            case 68:
+                                songRate = 88200;
+                                break;
+
+                            case 93:
+                                songRate = 96000;
+                                break;
+
+                            case 94:
+                                songRate = 96000;
+                                break;
+                        }
 
                         dataGridView1.Rows.Add(
                             $"Track {trackIndex}",
@@ -444,12 +567,15 @@ namespace MT_SFX_Master
                             $"0x{songOffset:X}",
                             $"{startOffset:X}",
                             $"{endOffset:X}",
-                            $"{duration:X}"
+                            $"{duration:X}",
+                            $"{songRate} Hz"
                         );
 
                         trackIndex++;
                     }
                     label1.Text = "SYSTEM.nub is Loaded";
+                    label4.Location = new System.Drawing.Point(351, 35);
+                    label4.Size = new System.Drawing.Size(150, 30);
                     label2.Visible = true;
                     label3.Visible = false;
                     label4.Visible = true;
@@ -480,9 +606,21 @@ namespace MT_SFX_Master
 
             string songStartHex = dataGridView1.Rows[e.RowIndex].Cells["SfxStart"].Value.ToString();
             string songDurationHex = dataGridView1.Rows[e.RowIndex].Cells["SfxDuration"].Value.ToString();
+            string sfxRateValue = dataGridView1.Rows[e.RowIndex].Cells["SfxRate"]?.Value?.ToString()?.Replace(" Hz", "");
 
             int startOffset = Convert.ToInt32(songStartHex, 16);
             int duration = Convert.ToInt32(songDurationHex, 16);
+            if (string.IsNullOrEmpty(songStartHex) || string.IsNullOrEmpty(songDurationHex) || string.IsNullOrEmpty(sfxRateValue))
+            {
+                MessageBox.Show("One or more required fields are empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!int.TryParse(sfxRateValue, out int songRate))
+            {
+                MessageBox.Show($"Invalid sample rate: {sfxRateValue}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             if (e.RowIndex >= 0 && dataGridView1.Columns[e.ColumnIndex].Name == "ExportDataButton")
             {
@@ -589,7 +727,7 @@ namespace MT_SFX_Master
                         byte[] littleEndianData = ConvertBigEndianToLittleEndian(rawData);
 
                         // Open playback window
-                        PlaybackForm playbackForm = new PlaybackForm(littleEndianData, 22050, 16, 1);
+                        PlaybackForm playbackForm = new PlaybackForm(littleEndianData, songRate, 16, 1);
                         playbackForm.Show();
                     }
                 }
@@ -726,8 +864,13 @@ namespace MT_SFX_Master
                             break;
 
                         case 94:
-                            referenceBytesHeader = referenceBytesHeader5;
-                            referenceBytesBody = referenceBytesBody5;
+                            referenceBytesHeader = referenceBytesHeader5jp;
+                            referenceBytesBody = referenceBytesBody5jp;
+                            break;
+
+                        case 92:
+                            referenceBytesHeader = referenceBytesHeader5en;
+                            referenceBytesBody = referenceBytesBody5en;
                             break;
 
                         case 91:
@@ -773,9 +916,6 @@ namespace MT_SFX_Master
         private byte[] audioData;
         private WaveFormat waveFormat;
         private bool isLooping;
-        private System.Timers.Timer playbackTimer;
-        private int trackDuration; // Total duration in seconds
-        private int currentPlaybackPosition; // Current playback position in seconds
 
         public PlaybackForm(byte[] audioData, int sampleRate, int bitDepth, int channels)
         {

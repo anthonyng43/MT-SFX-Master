@@ -85,8 +85,8 @@ namespace MT_SFX_Master
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToOrderColumns = true;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeight = 29;
             this.dataGridView1.Location = new System.Drawing.Point(12, 71);
@@ -149,10 +149,9 @@ namespace MT_SFX_Master
             // label4
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(351, 50);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(126, 18);
+            this.label4.Size = new System.Drawing.Size(150, 15);
             this.label4.TabIndex = 11;
             this.label4.Text = "Loaded Version:";
             // 
@@ -179,6 +178,7 @@ namespace MT_SFX_Master
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         private void DataGridView1_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
