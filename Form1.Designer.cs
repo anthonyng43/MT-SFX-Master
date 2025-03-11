@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Windows.Forms;
-using NAudio.Wave;
-
-namespace MT_SFX_Master
+﻿namespace MT_SFX_Master
 {
     partial class Form1
     {
@@ -88,6 +83,7 @@ namespace MT_SFX_Master
             this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dataGridView1.ColumnHeadersHeight = 29;
             this.dataGridView1.Location = new System.Drawing.Point(12, 71);
             this.dataGridView1.MultiSelect = false;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -488,13 +489,14 @@ namespace MT_SFX_Master
                     dataGridView1.Columns.Add("SfxStart", "Sfx Start");
                     dataGridView1.Columns.Add("SfxEnd", "Sfx End");
                     dataGridView1.Columns.Add("SfxDuration", "Sfx Duration");
-                    dataGridView1.Columns.Add("SfxRate", "Sfx Rate");
+                    dataGridView1.Columns.Add("SfxPlayspeed", "Sfx Play Speed");
+                    dataGridView1.Columns.Add("SfxRate", "Sfx Sample Rate");
 
                     var exportDataButton = new DataGridViewButtonColumn
                     {
                         Name = "ExportDataButton",
                         HeaderText = "",
-                        Text = "Export",
+                        Text = "Export Raw",
                         UseColumnTextForButtonValue = true
                     };
                     dataGridView1.Columns.Add(exportDataButton);
@@ -540,26 +542,11 @@ namespace MT_SFX_Master
                         int startOffset = reader.ReadInt32() + fileHeaderHex;
                         int endOffset = startOffset + duration;
 
-                        fs.Seek(startOffset, SeekOrigin.Begin);
-                        byte[] rawData = reader.ReadBytes(duration);
+                        fs.Seek(songOffset + 0xBE, SeekOrigin.Begin);
+                        int playSpeed = reader.ReadInt16();
 
                         fs.Seek(songOffset + 0xC0, SeekOrigin.Begin);
                         int songRate = reader.ReadInt32();
-                        
-                        switch(trackIndex)
-                        {
-                            case 68:
-                                songRate = 88200;
-                                break;
-
-                            case 93:
-                                songRate = 96000;
-                                break;
-
-                            case 94:
-                                songRate = 96000;
-                                break;
-                        }
 
                         dataGridView1.Rows.Add(
                             $"Track {trackIndex}",
@@ -568,6 +555,7 @@ namespace MT_SFX_Master
                             $"{startOffset:X}",
                             $"{endOffset:X}",
                             $"{duration:X}",
+                            $"{playSpeed}",
                             $"{songRate} Hz"
                         );
 
@@ -598,7 +586,7 @@ namespace MT_SFX_Master
                 // Ignore clicks on headers or invalid cells
                 return;
             }
-            
+
             if (dataGridView1.Columns[e.ColumnIndex] == null)
             {
                 return;
@@ -607,6 +595,7 @@ namespace MT_SFX_Master
             string songStartHex = dataGridView1.Rows[e.RowIndex].Cells["SfxStart"].Value.ToString();
             string songDurationHex = dataGridView1.Rows[e.RowIndex].Cells["SfxDuration"].Value.ToString();
             string sfxRateValue = dataGridView1.Rows[e.RowIndex].Cells["SfxRate"]?.Value?.ToString()?.Replace(" Hz", "");
+            string playSpeedString = dataGridView1.Rows[e.RowIndex].Cells["SfxPlayspeed"].Value.ToString();
 
             int startOffset = Convert.ToInt32(songStartHex, 16);
             int duration = Convert.ToInt32(songDurationHex, 16);
@@ -619,6 +608,12 @@ namespace MT_SFX_Master
             if (!int.TryParse(sfxRateValue, out int songRate))
             {
                 MessageBox.Show($"Invalid sample rate: {sfxRateValue}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!int.TryParse(playSpeedString, out int playSpeed))
+            {
+                MessageBox.Show($"Invalid play speed: {playSpeedString}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -635,6 +630,8 @@ namespace MT_SFX_Master
                         // Prompt user to save the file
                         using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                         {
+                            saveFileDialog.Title = "Export As Raw";
+
                             if (saveFileDialog.ShowDialog() == DialogResult.OK)
                             {
                                 File.WriteAllBytes(saveFileDialog.FileName, rawData);
@@ -652,7 +649,7 @@ namespace MT_SFX_Master
             if (e.RowIndex >= 0 && dataGridView1.Columns[e.ColumnIndex].Name == "ReplaceDataButton")
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "All Files (*.*)|*.*";
+                openFileDialog.Filter = "Supported files (*.wav, *.snd)|*.wav;*.snd";
                 openFileDialog.Title = "Select File";
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -661,31 +658,31 @@ namespace MT_SFX_Master
 
                     try
                     {
-                        // Read the raw data from the selected file
                         byte[] rawData;
-                        using (FileStream fs = new FileStream(filepath, FileMode.Open, FileAccess.Read))
-                        using (BinaryReader reader = new BinaryReader(fs))
+                        string ext = Path.GetExtension(filepath).ToLower();
+
+                        if (ext == ".wav")
                         {
-                            rawData = reader.ReadBytes((int)fs.Length); // Read the entire file
+                            rawData = ConvertAndTrimPCM(filepath, songRate); // Convert WAV to PCM with trimming
+                        }
+                        else if (ext == ".snd")
+                        {
+                            rawData = File.ReadAllBytes(filepath); // Direct read for .snd
+                        }
+                        else
+                        {
+                            MessageBox.Show("Unsupported file format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
                         }
 
                         if (rawData.Length > duration)
                         {
-                            MessageBox.Show($"Loaded file exceed the duration limit.\nOperation aborted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show($"Loaded file exceeds the duration limit.\nOperation aborted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
 
-                        // Create a buffer with the exact size of the duration
                         byte[] fullData = new byte[duration];
-
-                        // Copy the raw data into the buffer
-                        Array.Copy(rawData, fullData, rawData.Length);
-
-                        // Fill the remaining bytes with 0x00 (if any)
-                        for (int i = rawData.Length; i < duration; i++)
-                        {
-                            fullData[i] = 0x00;
-                        }
+                        Array.Copy(rawData, fullData, Math.Min(rawData.Length, fullData.Length));
 
                         string origCopy = currentFilePath + ".orig";
                         if (!File.Exists(origCopy))
@@ -699,7 +696,7 @@ namespace MT_SFX_Master
                         using (FileStream fs = new FileStream(currentFilePath, FileMode.Open, FileAccess.ReadWrite))
                         {
                             fs.Seek(startOffset, SeekOrigin.Begin);
-                            fs.Write(fullData, 0, fullData.Length); // Write the full data (including padding) to the specified offset
+                            fs.Write(fullData, 0, fullData.Length);
                         }
 
                         PopulateTrackData(currentFilePath);
@@ -726,6 +723,8 @@ namespace MT_SFX_Master
                         // Convert from big-endian to little-endian
                         byte[] littleEndianData = ConvertBigEndianToLittleEndian(rawData);
 
+                        songRate = songRate * playSpeed;
+
                         // Open playback window
                         PlaybackForm playbackForm = new PlaybackForm(littleEndianData, songRate, 16, 1);
                         playbackForm.Show();
@@ -737,7 +736,7 @@ namespace MT_SFX_Master
                 }
             }
         }
-        
+
         // read raw bytes
         private void button3_Click(object sender, EventArgs e)
         {
@@ -905,6 +904,75 @@ namespace MT_SFX_Master
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to restore bytes:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private byte[] ConvertAndTrimPCM(string filePath, int songRate)
+        {
+            string ext = Path.GetExtension(filePath).ToLower();
+
+            if (ext == ".snd")
+            {
+                return File.ReadAllBytes(filePath); // No conversion needed
+            }
+
+            using (var reader = new AudioFileReader(filePath))
+            {
+                var targetFormat = new WaveFormat(songRate, 16, 1);
+                using (var resampler = new MediaFoundationResampler(reader, targetFormat))
+                {
+                    resampler.ResamplerQuality = 60;
+                    List<float> samples = new List<float>();
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+
+                    while ((bytesRead = resampler.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        for (int i = 0; i < bytesRead; i += 2)
+                        {
+                            short sample = BitConverter.ToInt16(buffer, i);
+                            float normalized = sample / 32768f;
+                            samples.Add(normalized);
+                        }
+                    }
+
+                    float silenceThreshold = 0.01f; // Lower threshold for better accuracy
+                    int startIndex = samples.FindIndex(s => Math.Abs(s) > silenceThreshold);
+                    int endIndex = samples.FindLastIndex(s => Math.Abs(s) > silenceThreshold);
+
+                    if (startIndex == -1 || endIndex == -1 || startIndex >= endIndex)
+                        return Array.Empty<byte>();
+
+                    short[] trimmedSamples = samples.Skip(startIndex).Take(endIndex - startIndex + 1)
+                                                    .Select(f => (short)(f * 32767f))
+                                                    .ToArray();
+
+                    string tempPath = Path.GetTempFileName() + ".wav";
+                    try
+                    {
+                        using (var writer = new WaveFileWriter(tempPath, targetFormat))
+                        {
+                            byte[] sampleBuffer = new byte[trimmedSamples.Length * 2];
+                            Buffer.BlockCopy(trimmedSamples, 0, sampleBuffer, 0, sampleBuffer.Length);
+                            writer.Write(sampleBuffer, 0, sampleBuffer.Length);
+                        }
+
+                        byte[] pcmData = File.ReadAllBytes(tempPath);
+                        for (int i = 44; i < pcmData.Length; i += 2)
+                        {
+                            Array.Reverse(pcmData, i, 2);
+                        }
+
+                        return pcmData;
+                    }
+                    finally
+                    {
+                        if (File.Exists(tempPath))
+                        {
+                            File.Delete(tempPath); // Auto-delete temp file after use
+                        }
+                    }
+                }
             }
         }
     }
